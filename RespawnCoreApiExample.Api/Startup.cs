@@ -30,7 +30,7 @@ namespace RespawnCoreApiExample.Api
                 options
                     .UseNpgsql(
                         Configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly("RespawnCoreApiExample.Api.DataAccess")
+                        b => b.MigrationsAssembly("RespawnCoreApiExample.DataAccess")
                     )
             );
             
