@@ -26,8 +26,8 @@ namespace RespawnCoreApiExample.IntegrationTests.Controllers
             var response = await Client.GetAsync("/api/book");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var genres = await response.Content.DeserializeAsync<List<Book>>();
-            genres.Count.Should().Be(2);
+            var books = await response.Content.DeserializeAsync<List<Book>>();
+            books.Count.Should().Be(2);
         }
 
         [Fact]
