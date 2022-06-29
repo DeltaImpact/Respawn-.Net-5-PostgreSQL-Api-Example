@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
-using RespawnCoreApiExample.Domain.Db;
+using RespawnCoreApiExample.Domain.Models;
+using RespawnCoreApiExample.Domain.Models.Base;
 
 namespace RespawnCoreApiExample.DataAccess.Extensions
 {

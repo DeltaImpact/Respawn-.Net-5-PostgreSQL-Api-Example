@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using RespawnCoreApiExample.Domain.Models.Base;
 
-namespace RespawnCoreApiExample.Domain.Db.Entities
+namespace RespawnCoreApiExample.Domain.Models.Entities
 {
     public class Genre : BaseEntity, INamed
     {

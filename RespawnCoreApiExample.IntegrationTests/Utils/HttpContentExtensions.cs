@@ -3,11 +3,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace RespawnCoreApiExample.IntegrationTests.Extensions
+namespace RespawnCoreApiExample.IntegrationTests.Utils
 {
-    public static class TestingExtensions
+    public static class HttpContentExtensions
     {
-        
         public static StringContent Serialize<T>(this T content)
         {
             var json = JsonConvert.SerializeObject(content);

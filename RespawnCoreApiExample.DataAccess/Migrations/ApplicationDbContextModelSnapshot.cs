@@ -6,18 +6,36 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RespawnCoreApiExample.DataAccess.Contexts;
 
+#nullable disable
+
 namespace RespawnCoreApiExample.DataAccess.Migrations
 {
-    [DbContext(typeof(RespawnExampleDbContext))]
-    partial class RespawnExampleDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApplicationDbContext))]
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.Property<Guid>("AuthorsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BooksId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AuthorsId", "BooksId");
+
+                    b.HasIndex("BooksId");
+
+                    b.ToTable("AuthorBook");
+                });
 
             modelBuilder.Entity("BookGenre", b =>
                 {
@@ -34,7 +52,27 @@ namespace RespawnCoreApiExample.DataAccess.Migrations
                     b.ToTable("BookGenre");
                 });
 
-            modelBuilder.Entity("RespawnCoreApiExample.Domain.Db.Entities.Book", b =>
+            modelBuilder.Entity("RespawnCoreApiExample.Domain.Models.Entities.Author", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Modified")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Authors");
+                });
+
+            modelBuilder.Entity("RespawnCoreApiExample.Domain.Models.Entities.Book", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +92,7 @@ namespace RespawnCoreApiExample.DataAccess.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("RespawnCoreApiExample.Domain.Db.Entities.Genre", b =>
+            modelBuilder.Entity("RespawnCoreApiExample.Domain.Models.Entities.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,15 +112,30 @@ namespace RespawnCoreApiExample.DataAccess.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.HasOne("RespawnCoreApiExample.Domain.Models.Entities.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RespawnCoreApiExample.Domain.Models.Entities.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BookGenre", b =>
                 {
-                    b.HasOne("RespawnCoreApiExample.Domain.Db.Entities.Book", null)
+                    b.HasOne("RespawnCoreApiExample.Domain.Models.Entities.Book", null)
                         .WithMany()
                         .HasForeignKey("BooksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RespawnCoreApiExample.Domain.Db.Entities.Genre", null)
+                    b.HasOne("RespawnCoreApiExample.Domain.Models.Entities.Genre", null)
                         .WithMany()
                         .HasForeignKey("GenresId")
                         .OnDelete(DeleteBehavior.Cascade)

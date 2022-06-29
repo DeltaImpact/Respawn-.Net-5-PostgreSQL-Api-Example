@@ -3,26 +3,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RespawnCoreApiExample.DataAccess.Contexts;
 
-namespace RespawnCoreApiExample.Api.Controllers
+namespace RespawnCoreApiExample.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class GenreController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class GenreController : ControllerBase
+    public readonly ApplicationDbContext ApplicationDbContext;
+
+    private readonly ILogger<GenreController> _logger;
+
+    public GenreController(ILogger<GenreController> logger, ApplicationDbContext applicationDbContext)
     {
-        public readonly RespawnExampleDbContext RespawnExampleDbContext;
+        ApplicationDbContext = applicationDbContext;
+        _logger = logger;
+    }
 
-        private readonly ILogger<GenreController> _logger;
-
-        public GenreController(ILogger<GenreController> logger, RespawnExampleDbContext respawnExampleDbContext)
-        {
-            RespawnExampleDbContext = respawnExampleDbContext;
-            _logger = logger;
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok(RespawnExampleDbContext.Genres.ToList());
-        }
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok(ApplicationDbContext.Genres.ToList());
     }
 }

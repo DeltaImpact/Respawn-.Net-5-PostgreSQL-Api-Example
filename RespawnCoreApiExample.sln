@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RespawnCoreApiExample.DataA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RespawnCoreApiExample.IntegrationTests", "RespawnCoreApiExample.IntegrationTests\RespawnCoreApiExample.IntegrationTests.csproj", "{DA92893F-62E6-43BF-95A5-71547C5B3213}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6159B9C0-EA11-4B3E-B4F2-0C42E52E1B25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C6F3ED0D-C685-4660-845D-A07398C14B2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,11 @@ Global
 		{DA92893F-62E6-43BF-95A5-71547C5B3213}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA92893F-62E6-43BF-95A5-71547C5B3213}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA92893F-62E6-43BF-95A5-71547C5B3213}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7BCEF9EE-3B5F-4B70-9ED5-A56F3B7C9047} = {6159B9C0-EA11-4B3E-B4F2-0C42E52E1B25}
+		{DF07D9A0-DA14-4A67-8BAF-DCDC52402CC9} = {6159B9C0-EA11-4B3E-B4F2-0C42E52E1B25}
+		{4AFF8D8C-A510-4FA7-8452-CC6C18AC116F} = {6159B9C0-EA11-4B3E-B4F2-0C42E52E1B25}
+		{DA92893F-62E6-43BF-95A5-71547C5B3213} = {C6F3ED0D-C685-4660-845D-A07398C14B2B}
 	EndGlobalSection
 EndGlobal

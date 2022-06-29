@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,74 +5,71 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using RespawnCoreApiExample.Api.Extensions;
 using RespawnCoreApiExample.DataAccess.Contexts;
 using RespawnCoreApiExample.DataAccess.Extensions;
-using RespawnCoreApiExample.Domain;
-using RespawnCoreApiExample.Domain.Db.Entities;
+using RespawnCoreApiExample.Domain.Constants;
+using RespawnCoreApiExample.Domain.Models.Entities;
 
-namespace RespawnCoreApiExample.Api
+namespace RespawnCoreApiExample.Api;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
+        Configuration = configuration;
+    }
+
+    private IConfiguration Configuration { get; }
+
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(Startup));
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options
+                .UseNpgsql(
+                    Configuration.GetConnectionString(nameof(ApplicationDbContext)),
+                    b => b.MigrationsAssembly("RespawnCoreApiExample.DataAccess")
+                )
+        );
+
+        services.AddControllers();
+        services.AddSwagger();
+    }
+
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext applicationDbContext)
+    {
+        applicationDbContext.Database.Migrate();
+        SeedGenres(applicationDbContext).Wait();
+
+        if (env.IsDevelopment())
         {
-            Configuration = configuration;
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RespawnCoreApiExample.Api v1"));
         }
 
-        public IConfiguration Configuration { get; }
+        app.UseHttpsRedirection();
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        app.UseAuthentication();
+        app.UseRouting();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+    }
+
+    private static async Task SeedGenres(ApplicationDbContext applicationDbContext)
+    {
+        foreach (var genre in BookGenres.GetAllGenres())
         {
-            services.AddDbContext<RespawnExampleDbContext>(options =>
-                options
-                    .UseNpgsql(
-                        Configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly("RespawnCoreApiExample.DataAccess")
-                    )
-            );
-            
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
+            if (!await applicationDbContext.Genres.GetByName(genre).AnyAsync())
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "RespawnCoreApiExample.Api", Version = "v1"});
-            });
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RespawnExampleDbContext respawnExampleDbContext)
-        {
-            respawnExampleDbContext.Database.Migrate();
-            SeedGenres(respawnExampleDbContext).Wait();
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RespawnCoreApiExample.Api v1"));
+                await applicationDbContext.Genres.AddAsync(new Genre { Name = genre });
             }
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
-        private static async Task SeedGenres(RespawnExampleDbContext respawnExampleDbContext)
-        {
-            foreach (var genre in BookGenres.GetAllGenres())
-            {
-                if (!await respawnExampleDbContext.Genres.GetByName(genre).AnyAsync())
-                {
-                    await respawnExampleDbContext.Genres.AddAsync(new Genre {Name = genre});
-                }
-            }
-
-            await respawnExampleDbContext.SaveChangesAsync();
-        }
+        await applicationDbContext.SaveChangesAsync();
     }
 }

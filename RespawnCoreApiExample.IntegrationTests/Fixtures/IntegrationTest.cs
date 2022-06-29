@@ -1,70 +1,37 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
 using Respawn;
 using RespawnCoreApiExample.DataAccess.Contexts;
-using Xunit;
+using RespawnCoreApiExample.IntegrationTests.Utils;
 
 namespace RespawnCoreApiExample.IntegrationTests.Fixtures
 {
-    public class IntegrationTest : IClassFixture<ApiWebApplicationFactory>
+    public class IntegrationTestFactory : ApiWebApplicationFactory
     {
-         private readonly Checkpoint _checkpoint = new Checkpoint
+        private readonly Checkpoint _checkpoint = RespawnHelper.GetCheckpoint();
+
+        public readonly HttpClient Client;
+
+        public ApplicationDbContext Context { get; private set; }
+
+        public IntegrationTestFactory()
         {
-            SchemasToInclude = new[]
-            {
-                "public"
-            },
-            TablesToIgnore = new []
-            {
-                "Genres",
-                "__EFMigrationsHistory"
-            },
-            DbAdapter = DbAdapter.Postgres
-        };
+            Client = CreateClient();
 
-        protected readonly ApiWebApplicationFactory Factory;
-
-        protected readonly HttpClient Client;
-
-        private string _connectionString;
-
-        protected RespawnExampleDbContext Context { get; private set; }
-
-        public IntegrationTest(ApiWebApplicationFactory fixture)
-        {
-            Factory = fixture;
-            Client = Factory.CreateClient();
-            LoadDbConnectionString(fixture.ConfigPath);
-            SetupContext();
-            SetupCheckpoint();
+            SetContext();
         }
 
-        private void LoadDbConnectionString(string configPath)
+        public async Task ResetDb()
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile(configPath)
-                .Build();
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            await RespawnHelper.ResetDbAsync(_checkpoint, ConnectionString);
         }
 
-        private void SetupContext()
-        {  
-            var builder = new DbContextOptionsBuilder<RespawnExampleDbContext>();
-            builder.UseNpgsql(_connectionString);
-            Context = new RespawnExampleDbContext(builder.Options);
-        }
-
-        private void SetupCheckpoint()
+        private void SetContext()
         {
-            using (var npgsqlConnection = new NpgsqlConnection(_connectionString))
-            {
-                npgsqlConnection.OpenAsync().Wait();
-                _checkpoint.Reset(npgsqlConnection).Wait();
-            }
+            var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            builder.UseNpgsql(ConnectionString);
+            Context = new ApplicationDbContext(builder.Options);
         }
     }
 }

@@ -1,22 +1,25 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using RespawnCoreApiExample.Api;
+using RespawnCoreApiExample.IntegrationTests.Utils;
 
 namespace RespawnCoreApiExample.IntegrationTests.Fixtures
 {
-    public class ApiWebApplicationFactory : WebApplicationFactory<Api.Startup>
+    public class ApiWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        public readonly string ConfigPath = "appsettings.IntegrationTests.json";
-        
+        private IConfigurationRoot _loadConfiguration;
+        public string ConnectionString { get; private set; }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureAppConfiguration(config =>
             {
-                var integrationConfig = new ConfigurationBuilder()
-                    .AddJsonFile(ConfigPath)
-                    .Build();
-                
-                config.AddConfiguration(integrationConfig);
+                _loadConfiguration = ConfigLoader.LoadConfiguration();
+                ConnectionString = ConfigLoader.GetDbConnectionString(_loadConfiguration);
+
+                config.AddConfiguration(_loadConfiguration);
             });
         }
     }

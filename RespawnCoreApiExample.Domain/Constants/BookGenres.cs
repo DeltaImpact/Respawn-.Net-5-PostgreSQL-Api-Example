@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RespawnCoreApiExample.Domain
+namespace RespawnCoreApiExample.Domain.Constants
 {
     public static class BookGenres
     {
@@ -12,7 +12,7 @@ namespace RespawnCoreApiExample.Domain
 
         public static List<string> GetAllGenres()
         {
-            return new() {Fantasy, HistoricalFiction, ContemporaryFiction, Mystery, ScienceFiction};
+            return new List<string> {Fantasy, HistoricalFiction, ContemporaryFiction, Mystery, ScienceFiction};
         }
     }
 }

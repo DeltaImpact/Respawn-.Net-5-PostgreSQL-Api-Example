@@ -1,15 +1,17 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RespawnCoreApiExample.DataAccess.Extensions;
-using RespawnCoreApiExample.Domain.Db.Entities;
+using RespawnCoreApiExample.Domain.Models.Entities;
 
 namespace RespawnCoreApiExample.DataAccess.Contexts
 {
-    public class RespawnExampleDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public RespawnExampleDbContext(DbContextOptions<RespawnExampleDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
@@ -22,5 +24,6 @@ namespace RespawnCoreApiExample.DataAccess.Contexts
 
         public DbSet<Book> Books { get; set; }
         public DbSet<Genre> Genres { get; set; }
+        public DbSet<Author> Authors { get; set; }
     }
 }

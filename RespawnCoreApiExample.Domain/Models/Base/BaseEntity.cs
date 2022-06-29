@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RespawnCoreApiExample.Domain.Db
+namespace RespawnCoreApiExample.Domain.Models.Base
 {
     public class BaseEntity
     {

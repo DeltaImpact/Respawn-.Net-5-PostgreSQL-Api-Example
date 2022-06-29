@@ -1,0 +1,40 @@
+variables:
+  POSTGRES_DB: IntegrationTestDb
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: pgPassword
+  POSTGRES_HOST_AUTH_METHOD: trust
+
+API Build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  script:
+    - dotnet build RespawnCoreApiExample.Api/RespawnCoreApiExample.Api.csproj -c Release
+  only:
+    - merge_requests
+    - develop
+    - master
+
+API Integration Tests:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  services:
+    - postgres:12.2-alpine
+  variables:
+    INTEGRATION_TESTS_FOLDER: "RespawnCoreApiExample.IntegrationTests"
+    INTEGRATION_TESTS_CSPROJ: "$INTEGRATION_TESTS_FOLDER/RespawnCoreApiExample.IntegrationTests.csproj"
+    INTEGRATION_COVERAGE_FILE: "$INTEGRATION_TESTS_FOLDER/coverage/coverage.cobertura.xml"
+    ASPNETCORE_ENVIRONMENT: Development
+    ASPNETCORE_URLS: https://+:443;http://+:80
+    ConnectionStrings__ApplicationDbContext: "Server=postgres;PORT=5432;DATABASE=IntegrationTestDb;USER ID=postgres;PASSWORD=pgPassword"
+  script:
+    - dotnet test $INTEGRATION_TESTS_CSPROJ -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="./coverage/"
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: $INTEGRATION_COVERAGE_FILE
+  coverage: '/Total[^|]*\|[^|]*\s+([\d\.]+)/'
+  only:
+    - merge_requests
+    - develop
+    - master
