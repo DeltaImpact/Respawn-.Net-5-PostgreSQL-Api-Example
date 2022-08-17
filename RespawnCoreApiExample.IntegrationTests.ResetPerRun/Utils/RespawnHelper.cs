@@ -3,7 +3,7 @@ using Npgsql;
 using Respawn;
 using Respawn.Graph;
 
-namespace RespawnCoreApiExample.IntegrationTests.Utils
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Utils
 {
     public class RespawnHelper
     {
@@ -26,12 +26,10 @@ namespace RespawnCoreApiExample.IntegrationTests.Utils
 
         public static async Task ResetDbAsync(Checkpoint checkpoint, string connectionString)
         {
-            using (var npgsqlConnection = new NpgsqlConnection(connectionString))
-            {
-                await npgsqlConnection.OpenAsync();
-                await checkpoint.Reset(npgsqlConnection);
-                await npgsqlConnection.CloseAsync();
-            }
+            await using var npgsqlConnection = new NpgsqlConnection(connectionString);
+            await npgsqlConnection.OpenAsync();
+            await checkpoint.Reset(npgsqlConnection);
+            await npgsqlConnection.CloseAsync();
         }
     }
 }

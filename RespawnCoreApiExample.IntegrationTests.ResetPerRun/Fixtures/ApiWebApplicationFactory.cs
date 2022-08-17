@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using RespawnCoreApiExample.Api;
-using RespawnCoreApiExample.IntegrationTests.Utils;
+using RespawnCoreApiExample.IntegrationTests.ResetPerRun.Utils;
 
-namespace RespawnCoreApiExample.IntegrationTests.Fixtures
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Fixtures
 {
     public class ApiWebApplicationFactory : WebApplicationFactory<Startup>
     {

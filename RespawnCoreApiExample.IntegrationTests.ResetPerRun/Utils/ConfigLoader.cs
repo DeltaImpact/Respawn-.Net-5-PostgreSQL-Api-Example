@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RespawnCoreApiExample.DataAccess.Contexts;
 
-namespace RespawnCoreApiExample.IntegrationTests.Utils
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Utils
 {
     public static class ConfigLoader
     {

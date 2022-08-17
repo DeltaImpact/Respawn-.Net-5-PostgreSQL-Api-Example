@@ -1,16 +1,11 @@
 ﻿using System.Net.Http;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Respawn;
 using RespawnCoreApiExample.DataAccess.Contexts;
-using RespawnCoreApiExample.IntegrationTests.Utils;
 
-namespace RespawnCoreApiExample.IntegrationTests.Fixtures
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Fixtures
 {
     public class IntegrationTestFactory : ApiWebApplicationFactory
     {
-        private readonly Checkpoint _checkpoint = RespawnHelper.GetCheckpoint();
-
         public readonly HttpClient Client;
 
         public ApplicationDbContext Context { get; private set; }
@@ -20,11 +15,6 @@ namespace RespawnCoreApiExample.IntegrationTests.Fixtures
             Client = CreateClient();
 
             SetContext();
-        }
-
-        public async Task ResetDb()
-        {
-            await RespawnHelper.ResetDbAsync(_checkpoint, ConnectionString);
         }
 
         private void SetContext()

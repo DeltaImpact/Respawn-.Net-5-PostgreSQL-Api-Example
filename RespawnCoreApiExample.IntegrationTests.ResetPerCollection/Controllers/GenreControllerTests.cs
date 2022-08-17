@@ -3,11 +3,11 @@ using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using RespawnCoreApiExample.Domain.Models.Entities;
-using RespawnCoreApiExample.IntegrationTests.Fixtures;
-using RespawnCoreApiExample.IntegrationTests.Utils;
+using RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Fixtures;
+using RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Utils;
 using Xunit;
 
-namespace RespawnCoreApiExample.IntegrationTests.Controllers
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Controllers
 {
     public class GenreControllerTests : IClassFixture<IntegrationTestFactory>
     {
@@ -27,6 +27,12 @@ namespace RespawnCoreApiExample.IntegrationTests.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var genres = await response.Content.DeserializeAsync<List<Genre>>();
             genres.Count.Should().Be(5);
+        }
+
+        [Fact]
+        public async Task Artificial_Delay()
+        {
+            await Task.Delay(1000);
         }
     }
 }

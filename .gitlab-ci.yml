@@ -4,6 +4,11 @@ variables:
   POSTGRES_PASSWORD: pgPassword
   POSTGRES_HOST_AUTH_METHOD: trust
 
+stages:
+  - build
+  - testResetPerCollection
+  - testResetPerRun
+
 API Build:
   stage: build
   image: mcr.microsoft.com/dotnet/sdk:6.0
@@ -14,14 +19,39 @@ API Build:
     - develop
     - master
 
-API Integration Tests:
-  stage: test
+API Integration Tests - Reset Per Collection:
+  stage: testResetPerCollection
   image: mcr.microsoft.com/dotnet/sdk:6.0
   services:
     - postgres:12.2-alpine
   variables:
-    INTEGRATION_TESTS_FOLDER: "RespawnCoreApiExample.IntegrationTests"
-    INTEGRATION_TESTS_CSPROJ: "$INTEGRATION_TESTS_FOLDER/RespawnCoreApiExample.IntegrationTests.csproj"
+    INTEGRATION_TESTS_FOLDER: "RespawnCoreApiExample.IntegrationTests.ResetPerCollection"
+    INTEGRATION_TESTS_CSPROJ: "$INTEGRATION_TESTS_FOLDER/RespawnCoreApiExample.IntegrationTests.ResetPerCollection.csproj"
+    INTEGRATION_COVERAGE_FILE: "$INTEGRATION_TESTS_FOLDER/coverage/coverage.cobertura.xml"
+    ASPNETCORE_ENVIRONMENT: Development
+    ASPNETCORE_URLS: https://+:443;http://+:80
+    ConnectionStrings__ApplicationDbContext: "Server=postgres;PORT=5432;DATABASE=IntegrationTestDb;USER ID=postgres;PASSWORD=pgPassword"
+  script:
+    - dotnet test $INTEGRATION_TESTS_CSPROJ -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[xunit*]\*" /p:CoverletOutput="./coverage/"
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: $INTEGRATION_COVERAGE_FILE
+  coverage: '/Total[^|]*\|[^|]*\s+([\d\.]+)/'
+  only:
+    - merge_requests
+    - develop
+    - master
+
+API Integration Tests - Reset Per Run:
+  stage: testResetPerRun
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  services:
+    - postgres:12.2-alpine
+  variables:
+    INTEGRATION_TESTS_FOLDER: "RespawnCoreApiExample.IntegrationTests.ResetPerRun"
+    INTEGRATION_TESTS_CSPROJ: "$INTEGRATION_TESTS_FOLDER/RespawnCoreApiExample.IntegrationTests.ResetPerRun.csproj"
     INTEGRATION_COVERAGE_FILE: "$INTEGRATION_TESTS_FOLDER/coverage/coverage.cobertura.xml"
     ASPNETCORE_ENVIRONMENT: Development
     ASPNETCORE_URLS: https://+:443;http://+:80

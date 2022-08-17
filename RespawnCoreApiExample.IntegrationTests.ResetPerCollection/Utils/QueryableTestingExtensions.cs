@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace RespawnCoreApiExample.IntegrationTests.Utils
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Utils
 {
     public static class QueryableTestingExtensions
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RespawnCoreApiExample.DataAccess.Extensions;
@@ -11,7 +10,6 @@ namespace RespawnCoreApiExample.DataAccess.Contexts
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

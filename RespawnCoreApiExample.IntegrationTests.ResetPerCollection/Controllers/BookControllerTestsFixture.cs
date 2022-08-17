@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using RespawnCoreApiExample.Domain.Models.Entities;
-using RespawnCoreApiExample.IntegrationTests.Fixtures;
+using RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Fixtures;
 using Xunit;
 
-namespace RespawnCoreApiExample.IntegrationTests.Controllers
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Controllers
 {
     public class BookControllerTestsFixture : IntegrationTestFactory, IAsyncLifetime
     {

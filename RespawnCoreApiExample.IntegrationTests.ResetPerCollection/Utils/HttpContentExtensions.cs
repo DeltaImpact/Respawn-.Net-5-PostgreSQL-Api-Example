@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace RespawnCoreApiExample.IntegrationTests.Utils
+namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Utils
 {
     public static class HttpContentExtensions
     {

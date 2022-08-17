@@ -39,6 +39,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RespawnCoreApiExample.Api\RespawnCoreApiExample.Api.csproj" />
+      <ProjectReference Include="..\RespawnCoreApiExample.IntegrationTests.Common\RespawnCoreApiExample.IntegrationTests.Common.csproj" />
     </ItemGroup>
 
 </Project>

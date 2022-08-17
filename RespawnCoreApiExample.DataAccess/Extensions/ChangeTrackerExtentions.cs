@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using RespawnCoreApiExample.Domain.Models;
 using RespawnCoreApiExample.Domain.Models.Base;
 
 namespace RespawnCoreApiExample.DataAccess.Extensions
