@@ -22,7 +22,6 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Controllers
         public BookControllerTests(BookControllerTestsFixture fixture)
         {
             _fixture = fixture;
-            _fixture.Context.Books.WipeTable();
         }
 
         #region Create
@@ -43,12 +42,13 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var book = await response.Content.DeserializeAsync<BookDto>();
             book.Name.Should().Be(bookName);
+            _fixture.Context.Books.Any(e => e.Name == bookName).Should().BeTrue();
         }
 
         [Fact]
         public async Task Create_BookWithAuthor_ShouldCreateBook()
         {
-            const string bookName = "Crazy berry";
+            const string bookName = "Technical orange";
 
             var response = await _fixture.Client.PostAsync(
                 BaseUrl,
@@ -63,6 +63,7 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var book = await response.Content.DeserializeAsync<BookDto>();
             book.Name.Should().Be(bookName);
+            _fixture.Context.Books.Any(e => e.Name == bookName).Should().BeTrue();
         }
 
         #endregion
@@ -139,6 +140,7 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerCollection.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             _fixture.Context.Books.Any(e => e.Name == bookName).Should().BeFalse();
             book.Name.Should().Be(bookName);
+            _fixture.Context.Books.Any(e => e.Name == bookName).Should().BeFalse();
         }
 
         [Fact]

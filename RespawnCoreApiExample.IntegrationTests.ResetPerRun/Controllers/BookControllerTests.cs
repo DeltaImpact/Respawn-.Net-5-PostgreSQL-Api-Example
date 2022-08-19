@@ -39,6 +39,7 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var book = await response.Content.DeserializeAsync<BookDto>();
             book.Name.Should().Be(bookName);
+            Context.Books.Any(e => e.Name == bookName).Should().BeTrue();
         }
 
         [Fact]
@@ -50,7 +51,7 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Controllers
                 }
             )).Entity;
             await Context.SaveChangesAsync();
-            const string bookName = "Crazy berry";
+            const string bookName = "Technical orange";
 
             var response = await Client.PostAsync(
                 BaseUrl,
@@ -65,6 +66,7 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var book = await response.Content.DeserializeAsync<BookDto>();
             book.Name.Should().Be(bookName);
+            Context.Books.Any(e => e.Name == bookName).Should().BeTrue();
         }
 
         #endregion
@@ -141,6 +143,7 @@ namespace RespawnCoreApiExample.IntegrationTests.ResetPerRun.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             Context.Books.Any(e => e.Name == bookName).Should().BeFalse();
             book.Name.Should().Be(bookName);
+            Context.Books.Any(e => e.Name == bookName).Should().BeFalse();
         }
 
         [Fact]
